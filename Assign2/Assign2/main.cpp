@@ -55,26 +55,25 @@ int main(int argc, const char * argv[]) {
     Player p2('O', false);
     p1.setBoard(b);
     p2.setBoard(b);
-    b->placeBead(1, 'O');
-    b->placeBead(4, 'O');
-    b->placeBead(4, 'O');
-    b->placeBead(7, 'O');
-    b->placeBead(7, 'O');
-    b->placeBead(7, 'O');
     
-    printScore(p1, p2);
-    b->printBoard();
+    bool playing = true;
     
+    while (playing){
+        for (int i = 0; i < 12; i++){
+            printScore(p1, p2);
+            b->printBoard();
     
+            p1.getMove();
+            printScore(p1, p2);
+            b->printBoard();
     
-    p1.getMove();
-    printScore(p1, p2);
-    b->printBoard();
-    
-    p2.getMove();
-    printScore(p1, p2);
-    b->printBoard();
-    
+            p2.getMove();
+            printScore(p1, p2);
+            b->printBoard();
+        }
+        
+        
+    }
     
     
     /*char board[8][3];

@@ -36,15 +36,22 @@ void Player::getMove(){
             std::cin >> move;
             if (std::regex_match(move, reg)){
                 played = true;
+                bool valid = board->placeBead(toupper(move[0])-'A', charSymbol);
+                if (!valid){
+                    std::cout << "This peg is full. Please enter a valid move" << std::endl;
+                    played = false;
+                }
             }else{
                 std::cout << "Please enter a letter from A to H" << std::endl;
             }
         }
-        board->placeBead(toupper(move[0])-'A', charSymbol);
+        
     }
     else {
         // Store Board as key and hold the best move to make
         std::unordered_map<std::string, int> cur;
+        
+        
         
         
     }
