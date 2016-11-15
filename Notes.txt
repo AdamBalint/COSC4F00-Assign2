@@ -1,0 +1,5 @@
+Who goes first - Give a choice
+Make it simple to use
+Show scores after each move
+Give option to replay or quit game
+Make sure it runs in the lab
