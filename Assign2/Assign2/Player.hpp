@@ -13,6 +13,8 @@
 #include "Board.hpp"
 #include <regex>
 #include <unordered_map>
+#include <algorithm> 
+
 
 class Player{
 
@@ -24,6 +26,7 @@ class Player{
     int getScore();
     void getMove();
     bool getAI();
+    void changeTurn();
     
     
     private:
@@ -31,8 +34,12 @@ class Player{
     char charSymbol;
     Board* board;
     int score = 0;
-    
-    
+    int getBestMove(std::string);
+    int getBestMove(int, std::string, int, char);
+    bool isTurn = false;
+    int minimax(std::string, int, bool);
+    int heuristic(Board);
+    //int minimax(std::string, int, bool, int, int);
 };
 
 

@@ -52,26 +52,61 @@ int main(int argc, const char * argv[]) {
     
     Board* b = new Board();
     Player p1('X', false);
-    Player p2('O', false);
+    Player p2('O', true);
     p1.setBoard(b);
     p2.setBoard(b);
     
     bool playing = true;
     
     while (playing){
+        Board* b = new Board();
+        Player p1('X', false);
+        Player p2('O', true);
+        p1.setBoard(b);
+        p2.setBoard(b);
+
+        
+        printScore(p1, p2);
+        b->printBoard();
+        
         for (int i = 0; i < 12; i++){
-            printScore(p1, p2);
-            b->printBoard();
     
             p1.getMove();
+            
             printScore(p1, p2);
             b->printBoard();
-    
+            //std::cout << b->scoreAlmostPoint('X') << std::endl;
+
+            p1.changeTurn();
+            p2.changeTurn();
+            
             p2.getMove();
+            //std::cout << b->scoreAlmostPoint('O') << std::endl;
             printScore(p1, p2);
             b->printBoard();
+            p1.changeTurn();
+            p2.changeTurn();
+            
+            
         }
         
+        std::cout << "Congratulations ";
+        int p1Score, p2Score;
+        p1Score = p1.getScore();
+        p2Score = p2.getScore();
+        if (p1Score > p2Score){
+            std::cout << (p1.getAI() ? "AI X has won!" : "Player X has won!");
+        }else if (p2Score > p1Score){
+            std::cout << (p2.getAI() ? "AI O has won!" : "Player O has won!");
+        }else {
+            std::cout << "both players have won!" << std::endl;
+        }
+        std::cout << "Would you like to play another game? ";
+        char choice;
+        std::cin >> choice;
+        
+        if (choice == 'n')
+            playing = false;
         
     }
     

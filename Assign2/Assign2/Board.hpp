@@ -68,11 +68,14 @@ class Board{
     std::string stringify();
     bool isFull();
     int scoreBoard(char);
-    
+    int scoreAlmostPoint(char);
+    bool hasMoves();
     
     private:
     std::array<Peg, 8> pegs;
     int score3x3(Peg, Peg, Peg, char);
+    int scoreAlmostPoint3x3(Peg, Peg, Peg, char);
+    int totBeads = 0;
     
 };
 
