@@ -66,9 +66,13 @@ void Player::getMove(){
                 //int best = getBestMove(b.stringify());
                 //cur[b.stringify()] = best;
             if (placed){
-                int score = -minimax(b.stringify(), 4, charSymbol == 'O');
-                if (charSymbol == 'O')
-                    score *= -1;
+                /*
+                 O - bool: true, no inverse
+                 X - bool: true, no inverse
+                 */
+                int score = minimax(b.stringify(), 4, true);
+               // if (charSymbol == 'O')
+                 //   score *= -1;
                 
                 //std::cout << "Best: " << best << std::endl;
                 //std::cout << "Best Score: " << bestScore << std::endl;

@@ -32,12 +32,12 @@ void printScore(Player p1, Player p2){
     std::cout << "|_________________|" << std::endl;
     std::cout << "|          |      |" << std::endl;
     if (p1.getAI()){
-        std::cout << (p1Score < 10 ? "|   AI  X  |   " : "|   AI  X  |  ") << p1Score << "  |" << std::endl;
+        std::cout << (p1Score < 10 ? "|   AI   X |   " : "|   AI  X  |  ") << p1Score << "  |" << std::endl;
     }else {
         std::cout << (p1Score < 10 ? "| Player X |   " : "| Player X |  ") << p1Score << "  |" << std::endl;
     }
     if (p2.getAI()){
-        std::cout << (p2Score < 10 ? "|  AI   O  |   " : "|  AI   O  |  ") << p2Score << "  |" << std::endl;
+        std::cout << (p2Score < 10 ? "|   AI   O |   " : "|   AI  O  |  ") << p2Score << "  |" << std::endl;
     }else {
         std::cout << (p2Score < 10 ? "| Player O |   " : "| Player O |  ") << p2Score << "  |" << std::endl;
     }
@@ -48,19 +48,11 @@ void printScore(Player p1, Player p2){
 int main(int argc, const char * argv[]) {
     // insert code here...
     
-    
-    
-    Board* b = new Board();
-    Player p1('X', false);
-    Player p2('O', true);
-    p1.setBoard(b);
-    p2.setBoard(b);
-    
     bool playing = true;
     
     while (playing){
         Board* b = new Board();
-        Player p1('X', false);
+        Player p1('X', true);
         Player p2('O', true);
         p1.setBoard(b);
         p2.setBoard(b);
