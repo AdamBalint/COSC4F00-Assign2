@@ -84,7 +84,7 @@ void Board::printBoard(){
         pegs[7].printPegAt(i);
         std::cout << std::endl;
     }
-    
+    std::cout << "\n\n" << std::endl;
     
 }
 

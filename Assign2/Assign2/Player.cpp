@@ -28,11 +28,13 @@ int Player:: getScore(){
     return board->scoreBoard(charSymbol);
 }
 
+
+
 void Player::getMove(){
     std::regex reg("[a-hA-H]{1}");
     if (!isAI){
         bool played = false;
-        std::cout << "Please enter the peg you wish to place a bead on: ";
+        std::cout << "Please enter the peg you wish to place a bead on: " << std::endl;
         std::string move;
         while (!played){
             std::cin >> move;
@@ -43,6 +45,9 @@ void Player::getMove(){
                     std::cout << "This peg is full. Please enter a valid move" << std::endl;
                     played = false;
                 }
+            }else if (move.compare("q") == 0 || move.compare("Q") == 0){
+                std::cout << "We are sorry to see you leave ㅠㅠ\nHave a great day!" << std::endl;
+                exit(0);
             }else{
                 std::cout << "Please enter a letter from A to H" << std::endl;
             }
@@ -56,44 +61,91 @@ void Player::getMove(){
         std::unordered_map<std::string, int> cur;
         std::string boardRep = board->stringify();
         
-        int best = -1;
-        int bestScore = -10000000;
-        
-        // Generate all the boards I can respond with
-        for (int i = 0; i < 8; i++){
-            Board b(boardRep);
-            bool placed = b.placeBead(i, charSymbol);
-                //int best = getBestMove(b.stringify());
-                //cur[b.stringify()] = best;
-            if (placed){
-                /*
-                 O - bool: true, no inverse
-                 X - bool: true, no inverse
-                 */
-                int score = minimax(b.stringify(), 4, true);
-               // if (charSymbol == 'O')
-                 //   score *= -1;
+        if (!isTurn){
+            for (int j = 0; j < 8; j++){
+                int best = -1;
+                int bestScore = -10000000;
                 
-                //std::cout << "Best: " << best << std::endl;
-                //std::cout << "Best Score: " << bestScore << std::endl;
-                //std::cout << "Score: " << score << std::endl;
-                //std::cout << std::endl;
+                Board b2(boardRep);
                 
-                if (bestScore < score){
-                    bestScore = score;
-                    best = i;
-                    
+                bool placed2 = b2.placeBead(j, (charSymbol == 'O') ? 'X' : 'O');
+                if (placed2){
+                    // Generate all the boards I can respond with
+                    for (int i = 0; i < 8; i++){
+                        Board b(b2.stringify());
+                        bool placed = b.placeBead(i, charSymbol);
+                            //int best = getBestMove(b.stringify());
+                            //cur[b.stringify()] = best;
+                        if (placed){
+                            /*
+                             O - bool: true, no inverse
+                             X - bool: true, no inverse
+                             */
+                            int score = minimax(b.stringify(), 4, true);
+                           // if (charSymbol == 'O')
+                             //   score *= -1;
+                            
+                            //std::cout << "Best: " << best << std::endl;
+                            //std::cout << "Best Score: " << bestScore << std::endl;
+                            //std::cout << "Score: " << score << std::endl;
+                            //std::cout << std::endl;
+                            
+                            if (bestScore < score){
+                                bestScore = score;
+                                best = i;
+                            }
+                        }
+                    }
+                    cur[b2.stringify()] = best;
+                    //std::cout << "Best move for: " << j << " is: " << cur[b2.stringify()] << std::endl;
                 }
             }
+            while(!isTurn);
+            
+            //board->placeBead(cur[board->stringify()], charSymbol);
+            std::cout << "AI " << charSymbol << " Played on: " << (char)('A'+cur[board->stringify()]) << std::endl;
+            board->placeBead(cur[board->stringify()], charSymbol);
             
         }
        // std::cout << "Move: " << best << " Best Score: " << bestScore << std::endl;
+        else {
+            int best = -1;
+            int bestScore = -10000000;
+            
+            // Generate all the boards I can respond with
+            for (int i = 0; i < 8; i++){
+                Board b(boardRep);
+                bool placed = b.placeBead(i, charSymbol);
+                //int best = getBestMove(b.stringify());
+                //cur[b.stringify()] = best;
+                if (placed){
+                    /*
+                     O - bool: true, no inverse
+                     X - bool: true, no inverse
+                     */
+                    int score = minimax(b.stringify(), 4, true);
+                    // if (charSymbol == 'O')
+                    //   score *= -1;
+                    
+                    //std::cout << "Best: " << best << std::endl;
+                    //std::cout << "Best Score: " << bestScore << std::endl;
+                    //std::cout << "Score: " << score << std::endl;
+                    //std::cout << std::endl;
+                    
+                    if (bestScore < score){
+                        bestScore = score;
+                        best = i;
+                        
+                    }
+                }
+            }
+            // std::cout << "Move: " << best << " Best Score: " << bestScore << std::endl;
+            
+            //board->placeBead(cur[board->stringify()], charSymbol);
+            board->placeBead(best, charSymbol);
+            std::cout << "AI " << charSymbol << " Played on: " << (char)('A'+best) << std::endl;
+        }
         
-        while(!isTurn);
-        
-        //board->placeBead(cur[board->stringify()], charSymbol);
-        board->placeBead(best, charSymbol);
-        std::cout << "AI Played on: " << (char)('A'+best) << std::endl;
     }
 }
 

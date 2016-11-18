@@ -27,6 +27,7 @@ class Player{
     void getMove();
     bool getAI();
     void changeTurn();
+   // static void threadGetMove(Player p);
     
     
     private:

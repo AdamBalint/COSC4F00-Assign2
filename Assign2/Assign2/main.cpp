@@ -45,15 +45,56 @@ void printScore(Player p1, Player p2){
     std::cout << std::endl;
 }
 
+void getMove(Player* p){
+    p->getMove();
+}
+
+
 int main(int argc, const char * argv[]) {
     // insert code here...
     
     bool playing = true;
     
+    std::cout << "Welcome to the revolution! Welcome to 3D Tic-Tac-Toe" << std::endl;
+    
     while (playing){
         Board* b = new Board();
-        Player p1('X', true);
+        Player p1('X', false);
         Player p2('O', true);
+        
+        
+        bool valid = false;
+        while (!valid){
+            std::cout << "Is player X a Human(H) or AI(A)? ";
+            std::string response;
+            std::cin >> response;
+            if (response.compare("H") == 0 || response.compare("h") == 0){
+                p1 = Player('X', false);
+                valid = true;
+            } else if (response.compare("A") == 0 || response.compare("a") == 0){
+                p1 = Player('X', true);
+                valid = true;
+            } else {
+                std::cout << "Please enter A for AI or H for Human" << std::endl;
+            }
+        }
+        valid = false;
+        while (!valid){
+            std::cout << "Is player O a Human(H) or AI(A)? ";
+            std::string response;
+            std::cin >> response;
+            if (response.compare("H") == 0 || response.compare("h") == 0){
+                p2 = Player('O', false);
+                valid = true;
+            } else if (response.compare("A") == 0 || response.compare("a") == 0){
+                p2 = Player('O', true);
+                valid = true;
+            } else {
+                std::cout << "Please enter A for AI or H for Human" << std::endl;
+            }
+        }
+        std::cout << "Type q at any time to quit" << std::endl;
+        
         p1.setBoard(b);
         p2.setBoard(b);
 
@@ -63,17 +104,25 @@ int main(int argc, const char * argv[]) {
         
         for (int i = 0; i < 12; i++){
     
-            p1.getMove();
+            std::thread p1t, p2t;
+            p2t = std::thread(getMove, &p2);
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            p1t = std::thread(getMove, &p1);
             
+            
+            p1t.join();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
             printScore(p1, p2);
             b->printBoard();
-            //std::cout << b->scoreAlmostPoint('X') << std::endl;
-
+            
             p1.changeTurn();
             p2.changeTurn();
             
-            p2.getMove();
-            //std::cout << b->scoreAlmostPoint('O') << std::endl;
+            //p2.getMove();
+           
+            p2t.join();
+            
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
             printScore(p1, p2);
             b->printBoard();
             p1.changeTurn();
@@ -81,6 +130,10 @@ int main(int argc, const char * argv[]) {
             
             
         }
+        
+        
+        //printScore(p1, p2);
+        //b->printBoard();
         
         std::cout << "Congratulations ";
         int p1Score, p2Score;
@@ -93,11 +146,11 @@ int main(int argc, const char * argv[]) {
         }else {
             std::cout << "both players have won!" << std::endl;
         }
-        std::cout << "Would you like to play another game? ";
+        std::cout << "Would you like to play another game? (y/n) ";
         char choice;
         std::cin >> choice;
         
-        if (choice == 'n')
+        if (choice == 'n' || choice == 'N')
             playing = false;
         
     }
