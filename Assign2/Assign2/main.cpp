@@ -57,7 +57,7 @@ int main(int argc, const char * argv[]) {
         // Get user input for the players for AI or Human
         bool valid = false;
         while (!valid){
-            std::cout << "Is player X a Human(H) or AI(A)? ";
+            std::cout << "Is player X a Human(H) or AI(A) (X has first move)? ";
             std::string response;
             std::cin >> response;
             if (response.compare("H") == 0 || response.compare("h") == 0){
@@ -121,8 +121,12 @@ int main(int argc, const char * argv[]) {
             b->printBoard();
             
             // Swap the player turns
-            p1.changeTurn();
-            p2.changeTurn();
+            while (p1.getTurn()){
+                p1.changeTurn();
+            }
+            while(!p2.getTurn()){
+                p2.changeTurn();
+            }
             
             if (p1.getAI() || p2.getAI()){
             // Wait until Player O make it's move. Delay needed for proper printing
@@ -134,8 +138,13 @@ int main(int argc, const char * argv[]) {
             // Print score and board and then change turns
             printScore(p1, p2);
             b->printBoard();
-            p1.changeTurn();
-            p2.changeTurn();
+            while(p2.getTurn()){
+                p2.changeTurn();
+            }
+            while (!p1.getTurn()){
+                p1.changeTurn();
+            }
+            
         }
         
         // Game done, Display winner and ask if the user wants to play another game
@@ -144,9 +153,9 @@ int main(int argc, const char * argv[]) {
         p1Score = p1.getScore();
         p2Score = p2.getScore();
         if (p1Score > p2Score){
-            std::cout << (p1.getAI() ? "AI X has won!" : "Player X has won!");
+            std::cout << (p1.getAI() ? "AI X has won!" : "Player X has won!") << std::endl;
         }else if (p2Score > p1Score){
-            std::cout << (p2.getAI() ? "AI O has won!" : "Player O has won!");
+            std::cout << (p2.getAI() ? "AI O has won!" : "Player O has won!") << std::endl;
         }else {
             std::cout << "both players have won!" << std::endl;
         }

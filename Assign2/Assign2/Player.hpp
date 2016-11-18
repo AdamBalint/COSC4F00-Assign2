@@ -27,7 +27,7 @@ class Player{
     void getMove(); // Gets the player's move
     bool getAI(); // Gets if the player is an AI or not
     void changeTurn(); // Swaps the turn of the player
-    
+    bool getTurn(); // Returns if it is that player's turn or not
     
     private:
     bool isAI; // stores if the player is AI or not

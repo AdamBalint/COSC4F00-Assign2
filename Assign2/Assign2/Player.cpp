@@ -43,7 +43,7 @@ void Player::getMove(){
         bool played = false;
         
         // Ask the player for input
-        std::cout << "Please enter the peg you wish to place a bead on: " << std::endl;
+        std::cout << "Please enter the peg you wish to place a bead on: ";
         std::string move;
         while (!played){
             // Get the user input
@@ -196,4 +196,7 @@ bool Player::getAI(){
     return isAI;
 }
 
+bool Player::getTurn(){
+    return isTurn;
+}
 
