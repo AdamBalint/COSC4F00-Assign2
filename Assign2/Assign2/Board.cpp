@@ -25,9 +25,7 @@ Board::Board(std::string s){
     }
 }
 
-Board::~Board(){
-    
-}
+Board::~Board(){}
 
 // Places a bead on a specific peg
 // Returns true if it could place it, otherwise it returns false
@@ -39,7 +37,6 @@ bool Board::placeBead(int peg, char c){
     totBeads++;
     return true;
 }
-
 
 // Prints out the board
 void Board::printBoard(){
@@ -92,7 +89,6 @@ void Board::printBoard(){
         std::cout << std::endl;
     }
     std::cout << "\n\n" << std::endl;
-    
 }
 
 // Returns the array of pegs
@@ -183,7 +179,6 @@ int Board::score3x3(Peg left, Peg middle, Peg right, char player){
 // Uses the same 3x3 board logic as above
 int Board::scoreAlmostPoint(char player){
     int num = 0;
-    
     int boardCombos[6][3] = {{0,1,2}, {5,6,7}, {1,3,5}, {2,4,6}, {0,3,6}, {1,4,7}};
 
     // Checks the 3x3 boards
@@ -201,7 +196,6 @@ int Board::scoreAlmostPoint(char player){
     }
     return num;
 }
-
 
 // Scores the almost point for the 3x3 board horizontally and diagonally
 int Board::scoreAlmostPoint3x3(Peg left, Peg middle, Peg right, char player){

@@ -43,7 +43,6 @@ void getMove(Player* p){
     p->getMove();
 }
 
-
 int main(int argc, const char * argv[]) {
     bool playing = true; // Playing flag, if false, game will exit
     
@@ -105,14 +104,18 @@ int main(int argc, const char * argv[]) {
         for (int i = 0; i < 12; i++){
             
             // Set threads and get moves. Delay needed for proper printing
+            // If there are 2 human players, don't thread
             std::thread p1t, p2t;
-            p2t = std::thread(getMove, &p2);
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            p1t = std::thread(getMove, &p1);
+            if (p1.getAI() || p2.getAI()){
+                p2t = std::thread(getMove, &p2);
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                p1t = std::thread(getMove, &p1);
+                // Wait until Player X makes a move and then print board
+                p1t.join();
+            } else {
+                p1.getMove();
+            }
             
-            
-            // Wait until Player X makes a move and then print board
-            p1t.join();
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
             printScore(p1, p2);
             b->printBoard();
@@ -121,18 +124,18 @@ int main(int argc, const char * argv[]) {
             p1.changeTurn();
             p2.changeTurn();
             
-            
+            if (p1.getAI() || p2.getAI()){
             // Wait until Player O make it's move. Delay needed for proper printing
-            p2t.join();
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            
+                p2t.join();
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            } else {
+                p2.getMove();
+            }
             // Print score and board and then change turns
             printScore(p1, p2);
             b->printBoard();
             p1.changeTurn();
             p2.changeTurn();
-            
-            
         }
         
         // Game done, Display winner and ask if the user wants to play another game
@@ -154,8 +157,6 @@ int main(int argc, const char * argv[]) {
         // If choice is no then quit
         if (choice == 'n' || choice == 'N')
             playing = false;
-        
     }
-    
     return 0;
 }
