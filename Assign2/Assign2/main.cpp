@@ -13,14 +13,7 @@
 #include "Player.hpp"
 #include "Board.hpp"
 
-void meth(int num){
-    
-    int a = rand();
-    std::this_thread::sleep_for(std::chrono::milliseconds(a%30000+1));
-    std::cout << "Thread: " << num << " finished with " << a << "ms" << std::endl;
-}
-
-
+// Prints the score in a nice scoreboard
 void printScore(Player p1, Player p2){
 
     int p1Score = p1.getScore();
@@ -45,24 +38,24 @@ void printScore(Player p1, Player p2){
     std::cout << std::endl;
 }
 
+// Used to thread getting the player move
 void getMove(Player* p){
     p->getMove();
 }
 
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    
-    bool playing = true;
+    bool playing = true; // Playing flag, if false, game will exit
     
     std::cout << "Welcome to the revolution! Welcome to 3D Tic-Tac-Toe" << std::endl;
     
     while (playing){
+        // Set up default players and board
         Board* b = new Board();
         Player p1('X', false);
         Player p2('O', true);
         
-        
+        // Get user input for the players for AI or Human
         bool valid = false;
         while (!valid){
             std::cout << "Is player X a Human(H) or AI(A)? ";
@@ -101,34 +94,39 @@ int main(int argc, const char * argv[]) {
         }
         std::cout << "Type q at any time to quit" << std::endl;
         
+        // Give each player the board
         p1.setBoard(b);
         p2.setBoard(b);
 
-        
+        // Print the initial score and board
         printScore(p1, p2);
         b->printBoard();
         
         for (int i = 0; i < 12; i++){
-    
+            
+            // Set threads and get moves. Delay needed for proper printing
             std::thread p1t, p2t;
             p2t = std::thread(getMove, &p2);
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
             p1t = std::thread(getMove, &p1);
             
             
+            // Wait until Player X makes a move and then print board
             p1t.join();
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
             printScore(p1, p2);
             b->printBoard();
             
+            // Swap the player turns
             p1.changeTurn();
             p2.changeTurn();
             
-            //p2.getMove();
-           
-            p2t.join();
             
+            // Wait until Player O make it's move. Delay needed for proper printing
+            p2t.join();
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            
+            // Print score and board and then change turns
             printScore(p1, p2);
             b->printBoard();
             p1.changeTurn();
@@ -137,10 +135,7 @@ int main(int argc, const char * argv[]) {
             
         }
         
-        
-        //printScore(p1, p2);
-        //b->printBoard();
-        
+        // Game done, Display winner and ask if the user wants to play another game
         std::cout << "Congratulations ";
         int p1Score, p2Score;
         p1Score = p1.getScore();
@@ -156,44 +151,11 @@ int main(int argc, const char * argv[]) {
         char choice;
         std::cin >> choice;
         
+        // If choice is no then quit
         if (choice == 'n' || choice == 'N')
             playing = false;
         
     }
-    
-    
-    /*char board[8][3];
-    for (int i = 0; i < 8; i++){
-        for (int j = 0; j < 3; j++){
-            board[i][j] = '*';
-        }
-    }
-    
-    board[7][0] = 'X';
-    board[7][1] = 'O';
-    
-    board[2][0] = 'X';
-    board[5][0] = 'O';
-    
-    
-    for (int i = 2; i >= 0; i--){
-        std::cout << "Level: " << i << std::endl;
-        std::cout << board[0][i] << " " << board[1][i] << " " << board[2][i] << std::endl;
-        std::cout << " " << board[3][i] << " " << board[4][i] << std::endl;
-        std::cout << board[5][i] << " " << board[6][i] << " " << board[7][i] << std::endl;
-        std::cout << std::endl;
-    }
-    
-    std::thread thr[30];
-    
-    for (int i = 0; i < 30; i++){
-        thr[i] = std::thread(meth, i);
-    }
-    
-    for (int i = 0; i < 30; i++){
-        thr[i].join();
-    }
-    */
     
     return 0;
 }

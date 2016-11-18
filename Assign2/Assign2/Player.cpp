@@ -8,6 +8,8 @@
 
 #include "Player.hpp"
 
+// Creates a player using the pieces specified.
+// If the player is an AI or not is also specified
 Player::Player(char c, bool ai){
     charSymbol = c;
     if (charSymbol == 'X')
@@ -16,99 +18,111 @@ Player::Player(char c, bool ai){
 }
 
 Player::~Player(){
-
+    
 }
 
-void Player::setBoard(Board* brd){ // Pases the board to the player
+// Sets the board the player will use
+void Player::setBoard(Board* brd){
     board = brd;
 }
 
+// Gets the player's score
 int Player:: getScore(){
-    
     return board->scoreBoard(charSymbol);
 }
 
 
-
+// Gets the move from the player.
+// If the player is human, then it waits for human input
+// If the player is AI, then it runs minimax to find the next move
 void Player::getMove(){
     std::regex reg("[a-hA-H]{1}");
+    
+    // If the player is human
     if (!isAI){
         bool played = false;
+        
+        // Ask the player for input
         std::cout << "Please enter the peg you wish to place a bead on: " << std::endl;
         std::string move;
         while (!played){
+            // Get the user input
             std::cin >> move;
+            // Check for valid input
             if (std::regex_match(move, reg)){
+                // If valid, try placing it. If the placement is not valid ask for another move
                 played = true;
                 bool valid = board->placeBead(toupper(move[0])-'A', charSymbol);
                 if (!valid){
                     std::cout << "This peg is full. Please enter a valid move" << std::endl;
                     played = false;
                 }
-            }else if (move.compare("q") == 0 || move.compare("Q") == 0){
+            }
+            // If the input was invalid, check if they want to quit
+            else if (move.compare("q") == 0 || move.compare("Q") == 0){
                 std::cout << "We are sorry to see you leave ㅠㅠ\nHave a great day!" << std::endl;
                 exit(0);
-            }else{
+            }
+            // If it was invalid, and they didn't want to quit, then promt for another letter
+            else{
                 std::cout << "Please enter a letter from A to H" << std::endl;
             }
         }
         
     }
+    // If the player is AI
     else {
+        // Show that it is doing comething
         std::cout <<"\nThe AI is thinking..." << std::endl;
         
         // Store Board as key and hold the best move to make
         std::unordered_map<std::string, int> cur;
         std::string boardRep = board->stringify();
         
+        // If it is not this player's turn
         if (!isTurn){
+            // Go through each move the opponent could make
             for (int j = 0; j < 8; j++){
+                // Set up the default best move and best score
                 int best = -1;
                 int bestScore = -10000000;
                 
+                // Create a copy of the current board
                 Board b2(boardRep);
-                
+                // try placing a bead for the opponent to anticipate their move
                 bool placed2 = b2.placeBead(j, (charSymbol == 'O') ? 'X' : 'O');
+                
+                // if it was successful, then run minimax on that board
                 if (placed2){
+                    
                     // Generate all the boards I can respond with
                     for (int i = 0; i < 8; i++){
                         Board b(b2.stringify());
                         bool placed = b.placeBead(i, charSymbol);
-                            //int best = getBestMove(b.stringify());
-                            //cur[b.stringify()] = best;
                         if (placed){
-                            /*
-                             O - bool: true, no inverse
-                             X - bool: true, no inverse
-                             */
+                            // Calculate the score of that move
                             int score = minimax(b.stringify(), 4, true);
-                           // if (charSymbol == 'O')
-                             //   score *= -1;
-                            
-                            //std::cout << "Best: " << best << std::endl;
-                            //std::cout << "Best Score: " << bestScore << std::endl;
-                            //std::cout << "Score: " << score << std::endl;
-                            //std::cout << std::endl;
-                            
                             if (bestScore < score){
                                 bestScore = score;
                                 best = i;
                             }
                         }
                     }
+                    // store the best remponse to the possible oppenent board
                     cur[b2.stringify()] = best;
-                    //std::cout << "Best move for: " << j << " is: " << cur[b2.stringify()] << std::endl;
                 }
             }
+            // Wait for the turns to swap
             while(!isTurn);
             
-            //board->placeBead(cur[board->stringify()], charSymbol);
+            // Print where the AI placed for the user, and place bead
             std::cout << "AI " << charSymbol << " Played on: " << (char)('A'+cur[board->stringify()]) << std::endl;
             board->placeBead(cur[board->stringify()], charSymbol);
             
         }
-       // std::cout << "Move: " << best << " Best Score: " << bestScore << std::endl;
+        // If it is the AI's turn
         else {
+            // Do the same as above without accounting for the opponent's move as the opponent has alread played
             int best = -1;
             int bestScore = -10000000;
             
@@ -116,22 +130,10 @@ void Player::getMove(){
             for (int i = 0; i < 8; i++){
                 Board b(boardRep);
                 bool placed = b.placeBead(i, charSymbol);
-                //int best = getBestMove(b.stringify());
-                //cur[b.stringify()] = best;
                 if (placed){
-                    /*
-                     O - bool: true, no inverse
-                     X - bool: true, no inverse
-                     */
+                    
+                    // Calculate the score of that move
                     int score = minimax(b.stringify(), 4, true);
-                    // if (charSymbol == 'O')
-                    //   score *= -1;
-                    
-                    //std::cout << "Best: " << best << std::endl;
-                    //std::cout << "Best Score: " << bestScore << std::endl;
-                    //std::cout << "Score: " << score << std::endl;
-                    //std::cout << std::endl;
-                    
                     if (bestScore < score){
                         bestScore = score;
                         best = i;
@@ -139,9 +141,7 @@ void Player::getMove(){
                     }
                 }
             }
-            // std::cout << "Move: " << best << " Best Score: " << bestScore << std::endl;
-            
-            //board->placeBead(cur[board->stringify()], charSymbol);
+            // Print out where the AI moved for the player and place the bead
             board->placeBead(best, charSymbol);
             std::cout << "AI " << charSymbol << " Played on: " << (char)('A'+best) << std::endl;
         }
@@ -149,11 +149,16 @@ void Player::getMove(){
     }
 }
 
+// Changes whose turn it is
 void Player::changeTurn (){
     isTurn = !isTurn;
 }
 
 
+// Calculates the score of the current board
+// A combination of the points already earned, and the points that only have 1 bead missing
+// It tries maximizin it's points compared to the oppenent's points, while trying to create
+// more situations that could result in points compared to the ememy once again
 int Player::heuristic(Board b){
     int myScore = b.scoreBoard(charSymbol);
     int oppScore = b.scoreBoard((charSymbol == 'O') ? 'X' : 'O');
@@ -163,11 +168,14 @@ int Player::heuristic(Board b){
     return ((myScore-oppScore)*90 + (myAlmostScore - oppAlmostscore)*10);
 }
 
+// The minimax code
 int Player::minimax(std::string node, int depth, bool maximizing) {
+    // If we reached the ply level, calculate the board score
     if ( depth == 0 ){
         Board b(node);
         return heuristic(b);
     }
+    // Calculate the best score of the board
     int max = -1000000;
     for (int i = 0; i < 8; i++){
         Board b(node);
@@ -179,117 +187,11 @@ int Player::minimax(std::string node, int depth, bool maximizing) {
                 max = score;
         }
     }
+    // Return the score
     return (maximizing ? -1 : 1) * max;
 }
 
-
-/*
- 
- 
- */
-
-
-/*
-int Player::minimax(std::string node, int depth, bool maximizingPlayer){
-    Board b(node);
-    if (depth == 0 || !(b.hasMoves())){
-        int myScore = b.scoreBoard(charSymbol);
-        int oppScore = b.scoreBoard((charSymbol == 'O') ? 'X' : 'O');
-        return myScore - oppScore;
-    }
-    
-    if (maximizingPlayer){
-        int bestValue = -10000000;
-        for (int i = 0; i < 8; i++){
-            //Generate child
-            Board child(b.stringify());
-            bool placed = child.placeBead(i, (maximizingPlayer) ? charSymbol : (charSymbol == 'O') ? 'X' : 'O');
-            if (placed){
-                int v = minimax(child.stringify(), (depth-1), false);
-                bestValue = std::max(bestValue, -v);
-            }else {
-                int v = -1000000000;
-                bestValue = std::max(bestValue, -v);
-            }
-        }
-        return bestValue;
-    }
-    //minimizing player
-    else {
-        int bestValue = 10000000;
-        for (int i = 0; i < 8; i++){
-            //Generate child
-            Board child(b.stringify());
-            bool placed = child.placeBead(i, (!maximizingPlayer) ? ((charSymbol == 'O') ? 'X' : 'O') : charSymbol);
-            if (placed){
-                int v = minimax(child.stringify(), (depth-1), true);
-                bestValue = std::min(bestValue, v);
-            }else {
-                int v = 1000000000;
-                bestValue = std::min(bestValue, v);
-            }
-        }
-        return bestValue;
-    }
-}
-*/
-
-
-// Generate all the moved the opponent can respond with
-int Player::getBestMove(std::string s){
-    int score = -1000000;
-    int bestMove = -1;
-    
-    for (int i = 0; i < 8; i++){
-        Board b(s);
-        bool placed = b.placeBead(i, (charSymbol == 'O') ? 'X' : 'O');
-    
-        if (placed){
-            int myScore = b.scoreBoard(charSymbol);
-            int oppScore = b.scoreBoard((charSymbol == 'O') ? 'X' : 'O');
-            
-            if (score < (oppScore - myScore)){
-                score = (oppScore - myScore);
-                bestMove = i;
-            }
-        }
-        
-    }
-    /*
-    std::cout << "Best move for board " << std::endl;
-    Board b(s);
-    b.printBoard();
-    std::cout << " " << bestMove << "\tWith a Score of " << score << std::endl;*/
-    return bestMove;
-}
-
-/*
-int Player::getBestMove(int level, std::string boardRep, int next, char opponent){
-    int bestMove = -1;
-    int bestScore = -1000000;
-    if (level == 3)
-        return getScore();
-    Board b(boardRep);
-    bool placed = b.placeBead(next, opponent);
-    std::cout << "Bead placed at " << next << " by: " << opponent << std::endl;
-    
-    if (placed){
-        for (int i = 0; i < 8; i++){
-            int score = getBestMove(level+1, b.stringify(), i, (opponent == 'X') ? 'O': 'X');
-           // std::cout << "Level " << level << " Move to: " << i << " score: " << score << " player: " << opponent << std::endl;
-            if (score >= bestScore){
-                bestScore = score;
-                bestMove = i;
-            }
-        }
-    }
-    
-    return bestMove;
-}
-*/
-
-
-
+// Gets if the player is an AI or not
 bool Player::getAI(){
     return isAI;
 }

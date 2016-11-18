@@ -21,8 +21,8 @@ public:
     ~Peg();
     bool placeBead(char); // Places a bead on the peg
     std::vector<char> getBeads(); // returns the beads of the
-    void printPegAt(int);
-    long size();
+    void printPegAt(int); // Prints the bead at the specific level of the peg
+    long size(); // returns the number of beads on the peg
     
 private:
     std::vector<char> beads;// Peg can hold 3 beads

@@ -22,25 +22,20 @@ class Player{
     
     Player(char, bool); // Character to use and if AI or not
     ~Player();
-    void setBoard(Board*); // Pases the board to the player
-    int getScore();
-    void getMove();
-    bool getAI();
-    void changeTurn();
-   // static void threadGetMove(Player p);
+    void setBoard(Board*); // Passes the board to the player
+    int getScore(); // Gets the player's score
+    void getMove(); // Gets the player's move
+    bool getAI(); // Gets if the player is an AI or not
+    void changeTurn(); // Swaps the turn of the player
     
     
     private:
-    bool isAI;
-    char charSymbol;
-    Board* board;
-    int score = 0;
-    int getBestMove(std::string);
-    int getBestMove(int, std::string, int, char);
-    bool isTurn = false;
-    int minimax(std::string, int, bool);
-    int heuristic(Board);
-    //int minimax(std::string, int, bool, int, int);
+    bool isAI; // stores if the player is AI or not
+    char charSymbol; // Stores the symbol the player will use (X or O)
+    Board* board; // Stores the board
+    bool isTurn = false; // Stores if it is the player's turn or not
+    int minimax(std::string, int, bool); // The minimax algorithm
+    int heuristic(Board); // The heuristic calculation
 };
 
 
