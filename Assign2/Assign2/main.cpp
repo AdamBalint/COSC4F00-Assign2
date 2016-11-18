@@ -74,6 +74,9 @@ int main(int argc, const char * argv[]) {
             } else if (response.compare("A") == 0 || response.compare("a") == 0){
                 p1 = Player('X', true);
                 valid = true;
+            } else if (response.compare("Q") || response.compare("q")){
+                std::cout << "We are sorry to see you leave ㅠㅠ\nHave a great day!" << std::endl;
+                exit(0);
             } else {
                 std::cout << "Please enter A for AI or H for Human" << std::endl;
             }
@@ -89,6 +92,9 @@ int main(int argc, const char * argv[]) {
             } else if (response.compare("A") == 0 || response.compare("a") == 0){
                 p2 = Player('O', true);
                 valid = true;
+            } else if (response.compare("Q") || response.compare("q")){
+                std::cout << "We are sorry to see you leave ㅠㅠ\nHave a great day!" << std::endl;
+                exit(0);
             } else {
                 std::cout << "Please enter A for AI or H for Human" << std::endl;
             }
